@@ -1,5 +1,7 @@
 import fs from "fs";
 import Util from "../core/util";
+import FormatHeader from "../format/formatHeader";
+import BinStream from "../binary/binStream";
 
 export default class Compressor {
     /**
@@ -43,11 +45,18 @@ export default class Compressor {
             throw new Error("Cannot compress when the target file is not loaded");
         }
 
-        for (const byte of this.buffer.values()) {
-            console.log(Util.toBin(byte));
+        const result: Buffer = FormatHeader.create();
+        const stream: BinStream = new BinStream(this.buffer);
+
+        while (stream.hasNext) {
+            if (stream.isRepeat()) {
+                console.log("Repeats!");
+            }
+
+            stream.next();
         }
 
         // TODO
-        return this.buffer;
+        return result;
     }
 }
